@@ -17,5 +17,13 @@ namespace API.Mappers
                 Name = journalModel.Name,
             };
         }
+
+        public static Journal ToJournalFromCreateDTO(this CreateJournalReqDTO JournalDTO)
+        {
+            return new Journal
+            {
+                Name = JournalDTO.Name,
+            };
+        }
     }
 }

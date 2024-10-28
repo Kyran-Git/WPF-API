@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using API.Data;
+using API.Models;
+using API.DTO.Journal;
 using API.Mappers;
 using Microsoft.AspNetCore.Mvc;
 
@@ -36,7 +38,16 @@ namespace API.Controllers
                 return NotFound();
             }
 
-            return Ok(journal);
+            return Ok(journal.ToJournalDTO());
+        }
+
+        [HttpPost]
+        public IActionResult Create([FromBody] CreateJournalReqDTO JournalDTO)
+        {
+            var journalModel = JournalDTO.ToJournalFromCreateDTO();
+            _context.Journals.Add(journalModel);
+            _context.SaveChanges();
+            return CreatedAtAction("GetById", new { id = journalModel.Id }, journalModel.ToJournalDTO());
         }
     }
 }
