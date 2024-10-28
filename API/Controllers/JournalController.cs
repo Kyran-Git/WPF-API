@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using API.Data;
+using API.Mappers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -20,7 +21,8 @@ namespace API.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            var journal = _context.Journals.ToList();
+            var journal = _context.Journals.ToList()
+            .Select(s => s.ToJournalDTO());
             return Ok(journal);
         }
 
