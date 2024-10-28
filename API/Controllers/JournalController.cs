@@ -64,5 +64,20 @@ namespace API.Controllers
             _context.SaveChanges();
             return Ok(journalModel.ToJournalDTO());
         }
+
+        [HttpDelete]
+        [Route("{id}")]
+        public IActionResult Delete([FromRoute] int id)
+        {
+            var journalModel = _context.Journals.FirstOrDefault(x => x.Id == id);
+            if(journalModel == null)
+            {
+                return NotFound();
+            }
+
+            _context.Journals.Remove(journalModel);
+            _context.SaveChanges();
+            return NoContent();
+        }
     }
 }
