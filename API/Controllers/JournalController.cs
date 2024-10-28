@@ -49,5 +49,20 @@ namespace API.Controllers
             _context.SaveChanges();
             return CreatedAtAction("GetById", new { id = journalModel.Id }, journalModel.ToJournalDTO());
         }
+
+        [HttpPut]
+        [Route("{id}")]
+        public IActionResult Update([FromRoute] int id, [FromBody] UpdateJournalReqDTO updateDTO)
+        {
+            var journalModel = _context.Journals.FirstOrDefault(x => x.Id == id);
+            if(journalModel == null)
+            {
+                return NotFound();
+            }
+
+            journalModel.Name = updateDTO.Name;
+            _context.SaveChanges();
+            return Ok(journalModel.ToJournalDTO());
+        }
     }
 }
