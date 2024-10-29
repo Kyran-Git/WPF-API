@@ -35,7 +35,7 @@ namespace API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
-            var journal = await _context.Journals.FindAsync(id);
+            var journal = await _journalRepo.GetByIdAsync(id);
 
             if(journal == null)
             {
@@ -49,8 +49,7 @@ namespace API.Controllers
         public async Task<IActionResult> Create([FromBody] CreateJournalReqDTO JournalDTO)
         {
             var journalModel = JournalDTO.ToJournalFromCreateDTO();
-            await _context.Journals.AddAsync(journalModel);
-            await _context.SaveChangesAsync();
+            await _journalRepo.CreateAsync(journalModel);
             return CreatedAtAction("GetById", new { id = journalModel.Id }, journalModel.ToJournalDTO());
         }
 
@@ -58,14 +57,12 @@ namespace API.Controllers
         [Route("{id}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateJournalReqDTO updateDTO)
         {
-            var journalModel = await _context.Journals.FirstOrDefaultAsync(x => x.Id == id);
+            var journalModel = await _journalRepo.UpdateAsync(id, updateDTO);
             if(journalModel == null)
             {
                 return NotFound();
             }
 
-            journalModel.Name = updateDTO.Name;
-            await _context.SaveChangesAsync();
             return Ok(journalModel.ToJournalDTO());
         }
 
@@ -73,14 +70,12 @@ namespace API.Controllers
         [Route("{id}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
-            var journalModel = await _context.Journals.FirstOrDefaultAsync(x => x.Id == id);
+            var journalModel = await _journalRepo.DeleteAsync(id);
             if(journalModel == null)
             {
                 return NotFound();
             }
-
-            _context.Journals.Remove(journalModel);
-            await _context.SaveChangesAsync();
+            
             return NoContent();
         }
     }
