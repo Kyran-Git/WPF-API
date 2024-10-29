@@ -6,6 +6,7 @@ using API.Data;
 using API.Models;
 using API.DTO.Journal;
 using API.Mappers;
+using API.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,15 +17,17 @@ namespace API.Controllers
     public class JournalController : ControllerBase
     {
         private readonly ApplicationDBContext _context;
-        public JournalController(ApplicationDBContext context)
+        private readonly IJournalRepo _journalRepo;
+        public JournalController(ApplicationDBContext context, IJournalRepo journalRepo)
         {
+            _journalRepo = journalRepo;
             _context = context;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var journal = await _context.Journals.ToListAsync();
+            var journal = await _journalRepo.GetAllAsync();
             var journalDTO = journal.Select(s => s.ToJournalDTO());
             return Ok(journal);
         }
