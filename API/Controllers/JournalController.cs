@@ -7,6 +7,7 @@ using API.Models;
 using API.DTO.Journal;
 using API.Mappers;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
@@ -21,17 +22,17 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var journal = _context.Journals.ToList()
-            .Select(s => s.ToJournalDTO());
+            var journal = await _context.Journals.ToListAsync();
+            var journalDTO = journal.Select(s => s.ToJournalDTO());
             return Ok(journal);
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetById([FromRoute] int id)
+        public async Task<IActionResult> GetById([FromRoute] int id)
         {
-            var journal = _context.Journals.Find(id);
+            var journal = await _context.Journals.FindAsync(id);
 
             if(journal == null)
             {
@@ -42,41 +43,41 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] CreateJournalReqDTO JournalDTO)
+        public async Task<IActionResult> Create([FromBody] CreateJournalReqDTO JournalDTO)
         {
             var journalModel = JournalDTO.ToJournalFromCreateDTO();
-            _context.Journals.Add(journalModel);
-            _context.SaveChanges();
+            await _context.Journals.AddAsync(journalModel);
+            await _context.SaveChangesAsync();
             return CreatedAtAction("GetById", new { id = journalModel.Id }, journalModel.ToJournalDTO());
         }
 
         [HttpPut]
         [Route("{id}")]
-        public IActionResult Update([FromRoute] int id, [FromBody] UpdateJournalReqDTO updateDTO)
+        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateJournalReqDTO updateDTO)
         {
-            var journalModel = _context.Journals.FirstOrDefault(x => x.Id == id);
+            var journalModel = await _context.Journals.FirstOrDefaultAsync(x => x.Id == id);
             if(journalModel == null)
             {
                 return NotFound();
             }
 
             journalModel.Name = updateDTO.Name;
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return Ok(journalModel.ToJournalDTO());
         }
 
         [HttpDelete]
         [Route("{id}")]
-        public IActionResult Delete([FromRoute] int id)
+        public async Task<IActionResult> Delete([FromRoute] int id)
         {
-            var journalModel = _context.Journals.FirstOrDefault(x => x.Id == id);
+            var journalModel = await _context.Journals.FirstOrDefaultAsync(x => x.Id == id);
             if(journalModel == null)
             {
                 return NotFound();
             }
 
             _context.Journals.Remove(journalModel);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return NoContent();
         }
     }
