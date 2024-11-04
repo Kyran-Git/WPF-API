@@ -20,7 +20,7 @@ namespace API.Repository
 
         public async Task<List<Journal>> GetAllAsync()
         {
-            return await _context.Journals.ToListAsync();
+            return await _context.Journals.Include(e => e.Entries).ToListAsync();
         }
 
         public async Task<Journal> CreateAsync(Journal journalModel)
@@ -32,7 +32,7 @@ namespace API.Repository
 
         public async Task<Journal?> GetByIdAsync(int id)
         {
-            return await _context.Journals.FindAsync(id);
+            return await _context.Journals.Include(e => e.Entries).FirstOrDefaultAsync(i => i.Id == id);
         }
 
         public async Task<Journal?> DeleteAsync(int id)

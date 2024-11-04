@@ -12,14 +12,27 @@ namespace API.Controllers
        public EntryController(IEntryRepo entryRepo)
        {
         _entryRepo = entryRepo;
-       } 
+        }
 
-       [HttpGet]
+        [HttpGet]
        public async Task<IActionResult> GetAll()
        {
             var entries = await _entryRepo.GetAllAsync();
             var entryDTO = entries.Select(s => s.ToEntryDTO());
             return Ok(entryDTO);
+       }
+
+        [HttpGet("{id}")]
+       public async Task<IActionResult> GetById([FromRoute]int id)
+       {
+        var entry = await _entryRepo.GetByIdAsync(id);
+
+        if(entry == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(entry.ToEntryDTO());
        }
     }
 }

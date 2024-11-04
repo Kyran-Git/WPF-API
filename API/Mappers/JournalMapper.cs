@@ -15,6 +15,7 @@ namespace API.Mappers
             {
                 Id = journalModel.Id,
                 Name = journalModel.Name,
+                Entries = journalModel.Entries.Select(e => e.ToEntryDTO()).ToList()
             };
         }
 
