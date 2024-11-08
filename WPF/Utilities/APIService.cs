@@ -8,12 +8,25 @@ namespace WPF.Utilities
 {
     public class APIService
     {
-        private static readonly HttpClient _client = new HttpClient();
+        private static readonly HttpClient _httpClient = new HttpClient();
 
         public APIService()
         {
-            _client.BaseAddress = new Uri("");
-            _client.DefaultRequestHeaders.Accept.Clear();
+            _httpClient.BaseAddress = new Uri("http://localhost:5053");
+            _httpClient.DefaultRequestHeaders.Accept.Clear();
         }
+
+        public async Task<T> GetAsync<T>(string endpoint)
+    {
+        HttpResponseMessage response = await _httpClient.GetAsync(endpoint);
+        
+        if (response.IsSuccessStatusCode)
+        {
+            string json = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<T>(json); // Convert JSON to C# object
+        }
+
+        throw new HttpRequestException("Request failed with status: " + response.StatusCode);
+    }
     }
 }
