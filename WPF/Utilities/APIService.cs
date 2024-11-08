@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Net.Http;
+using Newtonsoft.Json;
 
 namespace WPF.Utilities
 {
@@ -23,7 +24,7 @@ namespace WPF.Utilities
         if (response.IsSuccessStatusCode)
         {
             string json = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<T>(json); // Convert JSON to C# object
+            return JsonConvert.DeserializeObject<T>(json);
         }
 
         throw new HttpRequestException("Request failed with status: " + response.StatusCode);
