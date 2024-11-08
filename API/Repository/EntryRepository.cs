@@ -36,5 +36,21 @@ namespace API.Repository
         {
             return await _context.Entries.FindAsync(id);
         }
+
+
+        public async Task<Entry?> UpdateAsync(int id, Entry entryModel)
+        {
+            var existingEntry = await _context.Entries.FindAsync(id);
+
+            if (existingEntry == null)
+            {
+                return null;
+            }
+
+            existingEntry.Title = entryModel.Title;
+            existingEntry.Content = entryModel.Content;
+            await _context.SaveChangesAsync();
+            return existingEntry;
+        }
     }
 }

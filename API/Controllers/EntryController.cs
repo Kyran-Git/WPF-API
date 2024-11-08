@@ -50,7 +50,21 @@ namespace API.Controllers
 
             var entryModel = entryDTO.ToEntryFromCreate(journalId);
             await _entryRepo.CreateAsync(entryModel);
-            return CreatedAtAction(nameof(GetById), new { id = entryModel }, entryModel.ToEntryDTO());
+            return CreatedAtAction(nameof(GetById), new { id = entryModel.Id }, entryModel.ToEntryDTO());
+        }
+
+        [HttpPut]
+        [Route("{id}")]
+
+        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateEntryReqDTO updateDTO)
+        {
+            var entry = await _entryRepo.UpdateAsync(id, updateDTO.ToEntryFromUpdate());
+            if(entry == null)
+            {
+                return NotFound("Entry not found!");
+            }
+            
+            return Ok(entry.ToEntryDTO());
         }
     }
 }

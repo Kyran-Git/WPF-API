@@ -12,5 +12,6 @@ namespace API.Interfaces
         Task<List<Entry>> GetAllAsync();
         Task<Entry?> GetByIdAsync(int id);
         Task<Entry> CreateAsync(Entry entryModel);
+        Task<Entry?> UpdateAsync(int id, Entry entryModel);
     }
 }

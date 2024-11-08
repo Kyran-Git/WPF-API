@@ -30,5 +30,14 @@ namespace API.Mappers
                 JournalId = journalId
             };
         }
+
+        public static Entry ToEntryFromUpdate(this UpdateEntryReqDTO entryDTO)
+        {
+            return new Entry
+            {
+                Title = entryDTO.Title,
+                Content = entryDTO.Content,
+            };
+        }
     }
 }
