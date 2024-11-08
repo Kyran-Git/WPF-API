@@ -7,6 +7,7 @@ using API.Interfaces;
 using API.Models;
 using API.Controllers;
 using Microsoft.EntityFrameworkCore;
+using API.DTO.Entry;
 
 namespace API.Repository
 {
@@ -18,6 +19,14 @@ namespace API.Repository
         {
             _context = context;
         }
+
+        public async Task<Entry> CreateAsync(Entry entryModel)
+        {
+            await _context.Entries.AddAsync(entryModel);
+            await _context.SaveChangesAsync();
+            return entryModel;
+        }
+
         public async Task<List<Entry>> GetAllAsync()
         {
             return await _context.Entries.ToListAsync();

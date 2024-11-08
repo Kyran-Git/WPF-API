@@ -60,5 +60,10 @@ namespace API.Repository
             await _context.SaveChangesAsync();
             return existingJournal;
         }
+
+        public Task<bool> JournalExist(int id)
+        {
+            return _context.Journals.AnyAsync(s => s.Id == id);
+        }
     }
 }

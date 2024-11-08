@@ -14,5 +14,6 @@ namespace API.Interfaces
         Task<Journal> CreateAsync(Journal journalModel);
         Task<Journal?> UpdateAsync(int id, UpdateJournalReqDTO JournalDTO);
         Task<Journal?> DeleteAsync(int id);
+        Task<bool> JournalExist(int id);
     }
 }

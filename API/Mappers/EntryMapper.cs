@@ -20,5 +20,15 @@ namespace API.Mappers
                 JournalId = entryModel.JournalId
             };
         }
+
+        public static Entry ToEntryFromCreate(this CreateEntryDTO entryDTO, int journalId)
+        {
+            return new Entry
+            {
+                Title = entryDTO.Title,
+                Content = entryDTO.Content,
+                JournalId = journalId
+            };
+        }
     }
 }
