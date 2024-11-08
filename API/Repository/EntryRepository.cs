@@ -52,5 +52,18 @@ namespace API.Repository
             await _context.SaveChangesAsync();
             return existingEntry;
         }
+
+        public async Task<Entry?> DeleteAsync(int id)
+        {
+            var entryModel = await _context.Entries.FirstOrDefaultAsync(x => x.Id == id);
+            if(entryModel == null)
+            {
+                return null;
+            }
+
+            _context.Entries.Remove(entryModel);
+            await _context.SaveChangesAsync();
+            return entryModel;
+        }
     }
 }

@@ -66,5 +66,19 @@ namespace API.Controllers
             
             return Ok(entry.ToEntryDTO());
         }
+
+        [HttpDelete]
+        [Route("{id}")]
+
+        public async Task<IActionResult> Delete([FromRoute] int id)
+        {
+            var entryModel = await _entryRepo.DeleteAsync(id);
+            if(entryModel == null)
+            {
+                return NotFound("Entry not found!");
+            }
+
+            return NoContent();
+        }
     }
 }
