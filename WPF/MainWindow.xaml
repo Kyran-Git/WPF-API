@@ -22,36 +22,7 @@
                 HorizontalAlignment="Left" VerticalAlignment="Top" 
                 Margin="320,10,0,0" Width="100" 
                 Click="LoadJournalsButton_Click"/>
-
-        <!-- Journal Creation Section -->
-        <TextBox x:Name="JournalTitleTextBox" Width="200" 
-                 HorizontalAlignment="Left" Margin="10,230,0,0" 
-                 VerticalAlignment="Top"/>
-        <TextBox x:Name="JournalDescriptionTextBox" Width="200" 
-                 HorizontalAlignment="Left" Margin="10,260,0,0" 
-                 VerticalAlignment="Top"/>
-
-        <Button x:Name="AddJournalButton" Content="Add Journal" 
-                HorizontalAlignment="Left" VerticalAlignment="Top" 
-                Margin="10,300,0,0" Width="100" 
-                Click="AddJournalButton_Click"/>
-
-        <!-- Entry Management Section -->
-        <TextBox x:Name="EntryIdTextBox" Width="100" 
-                 HorizontalAlignment="Left" Margin="320,50,0,0" 
-                 VerticalAlignment="Top"/>
-        <TextBox x:Name="EntryContentTextBox" Width="200" 
-                 HorizontalAlignment="Left" Margin="320,80,0,0" 
-                 VerticalAlignment="Top"/>
-
-        <Button x:Name="UpdateEntryButton" Content="Update Entry" 
-                HorizontalAlignment="Left" VerticalAlignment="Top" 
-                Margin="320,120,0,0" Width="100" 
-                Click="UpdateEntryButton_Click"/>
-
-        <Button x:Name="DeleteEntryButton" Content="Delete Entry" 
-                HorizontalAlignment="Left" VerticalAlignment="Top" 
-                Margin="320,150,0,0" Width="100" 
-                Click="DeleteEntryButton_Click"/>
+        
+        
     </Grid>
 </Window>

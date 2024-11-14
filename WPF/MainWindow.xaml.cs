@@ -50,19 +50,4 @@ public partial class MainWindow : Window
             MessageBox.Show($"Error loading journals: {ex.Message}");
         }
     }
-
-    private void AddJournalButton_Click(object sender, RoutedEventArgs e)
-    {
-
-    }
-
-    private void UpdateEntryButton_Click(object sender, RoutedEventArgs e)
-    {
-
-    }
-
-    private void DeleteEntryButton_Click(object sender, RoutedEventArgs e)
-    {
-
-    }
 }
