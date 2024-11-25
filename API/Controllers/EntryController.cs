@@ -40,17 +40,24 @@ namespace API.Controllers
             return Ok(entry.ToEntryDTO());
         }
 
-        [HttpPost("{journalId}")]
-        public async Task<IActionResult> Create([FromRoute] int journalId, CreateEntryDTO entryDTO)
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] CreateEntryDTO entryDTO)
         {
-            if(!await _journalRepo.JournalExist(journalId))
+            if(!await _journalRepo.JournalExist(entryDTO.JournalId))
             {
                 return BadRequest("Journal does not exist");
             }
 
-            var entryModel = entryDTO.ToEntryFromCreate(journalId);
-            await _entryRepo.CreateAsync(entryModel);
-            return CreatedAtAction(nameof(GetById), new { id = entryModel.Id }, entryModel.ToEntryDTO());
+            //var entryModel = entryDTO.ToEntryFromCreate(journalId);
+
+            Entry entry = new Entry()
+            {
+                Title = entryDTO.Title,
+                Content = entryDTO.Content,
+                JournalId = entryDTO.JournalId,
+            };
+            await _entryRepo.CreateAsync(entry);
+            return CreatedAtAction(nameof(GetById), new { id = entry.Id }, entry.ToEntryDTO());
         }
 
         [HttpPut]

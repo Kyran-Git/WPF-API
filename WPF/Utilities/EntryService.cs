@@ -30,25 +30,24 @@ namespace WPF.Utilities
             return await response.Content.ReadAsAsync<EntryDTO>();
         }
 
-        public async Task<EntryDTO> CreateEntryAsync(int journalId, CreateEntryDTO entryDTO)
+        public async Task<EntryDTO> CreateEntryAsync(CreateEntryDTO entryModel)
         {
-            var response = await _client.PostAsJsonAsync($"API/Entry/{journalId}", entryDTO );
+            var response = await _client.PostAsJsonAsync("API/Entry", entryModel);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadAsAsync<EntryDTO>();
         }
 
-        public async Task<EntryDTO> UpdateEntryAsync(int id, UpdateEntryReqDTO entryDTO)
+        public async Task<EntryDTO> UpdateEntryAsync(int id, UpdateEntryReqDTO updateDTO)
         {
-            var response = await _client.PutAsJsonAsync($"API/Entry/{id}", entryDTO);
+            var response = await _client.PutAsJsonAsync($"API/Entry/{id}", updateDTO);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadAsAsync<EntryDTO>();
         }
 
-        public async Task<EntryDTO> DeleteEntryAsync(int id)
+        public async Task<bool> DeleteEntryAsync(int id)
         {
             var response = await _client.DeleteAsync($"API/Entry/{id}");
-            response.EnsureSuccessStatusCode();
-            return await response.Content.ReadAsAsync<EntryDTO>();
+            return response.IsSuccessStatusCode;
         }
     }
 }
