@@ -237,7 +237,32 @@ public partial class MainWindow : Window
     }
     private async void DeleteEntry_Click(object sender, RoutedEventArgs e)
     {
+        var selectedEntry = (EntryDTO)EntriesListBox.SelectedItem;
+        if (selectedEntry == null)
+        {
+            MessageBox.Show("Please select an Entry to delete");
+            return;
+        }
 
+        try
+        {
+            var result = MessageBox.Show($"Are you sure you want to delete '{selectedEntry.Title}'?", "Confirm Delete", MessageBoxButton.YesNo);
+            if (result == MessageBoxResult.Yes)
+            {
+                await _entryService.DeleteEntryAsync(selectedEntry.Id);
+                if(EntriesListBox.ItemsSource is ObservableCollection <EntryDTO> entries)
+                {
+                    entries.Remove(selectedEntry);
+                }
+
+                MessageBox.Show("Entry Deleted Successfully");
+            }
+
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Error deleting entry: {ex.Message}");
+        }
     }
 
 }
