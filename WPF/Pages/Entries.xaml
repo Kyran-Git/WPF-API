@@ -8,7 +8,65 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="Entries">
 
+    <Page.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Styles/ListBox.xaml"/>
+                <ResourceDictionary Source="/Styles/Buttons.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Page.Resources>
+
     <Grid>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="450"/>
+            <ColumnDefinition Width="350"/>
+        </Grid.ColumnDefinitions>
         
+        <GroupBox Header="Entries" Grid.Row="0" Grid.Column="0" Margin="10">
+            <StackPanel>
+                <ListBox x:Name="EntriesListBox" Height="200" Style="{StaticResource ListBox_Style}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Vertical">
+                                <TextBlock Text="{Binding JournalId, StringFormat=Journal ID: {0}}"/>
+                                <TextBlock Text="{Binding Title}" FontWeight="Bold" />
+                                <TextBlock Text="{Binding Date}" />
+                                <TextBlock Text="{Binding Content}" TextWrapping="Wrap" MaxHeight="40" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+                <TextBlock Margin="5,5,5,5" Text="Choose Journal"/>
+                <ComboBox Width="200" Height="30" Margin="10" 
+                  x:Name="DropdownList"
+                  ItemsSource="{Binding Journals}" 
+                  DisplayMemberPath="Name" 
+                  SelectedValuePath="Id"
+                  SelectedValue="{Binding JournalId}"
+                  Loaded="Data_Load"/>
+
+                <TextBlock Margin="5,5,5,5" Text="Entry Title"/>
+                <TextBox Margin="5,5,5,5" Name="entryName"/>
+
+                <TextBlock Margin="5,5,5,5" Text="Entry Content"/>
+                <TextBox Margin="5,5,5,5" Height="75" Name="entryContent"/>
+
+
+            </StackPanel>
+        </GroupBox>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" Margin="10">
+            <GroupBox Grid.Row="0" Grid.Column="1">
+                <StackPanel VerticalAlignment="Center">
+                    <Button Content="Create Entry" Margin="5,5,5,5" Height="40" Width="100" Click="CreateEntry_Click" Style="{StaticResource Btn_Style}"/>
+                    <Button Content="Delete Entry" Margin="5,5,5,5" Height="40" Width="100" Click="DeleteEntry_Click" Style="{StaticResource Btn_Style}"/>
+                    <Button Content="Update Entry" Margin="5,5,5,5" Height="40" Width="100" Click="UpdateEntry_Click" Style="{StaticResource Btn_Style}"/>
+                </StackPanel>
+            </GroupBox>
+            <Button Content="Load Entries" Width="150" Click="LoadEntriesButton_Click" Margin="10,0,0,0" Style="{StaticResource Btn_Style}" Height="350"/>
+        </StackPanel>
     </Grid>
 </Page>

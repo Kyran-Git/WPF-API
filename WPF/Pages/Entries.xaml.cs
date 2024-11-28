@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using WPF.DTO.Entry;
+using WPF.Utilities;
 
 namespace WPF.Pages
 {
@@ -20,9 +23,147 @@ namespace WPF.Pages
     /// </summary>
     public partial class Entries : Page
     {
+        private readonly EntryService _entryService;
+        private readonly JournalService _journalService;
         public Entries()
         {
             InitializeComponent();
+            string apiBaseUrl = "http://localhost:5053/";
+            _entryService = new EntryService(apiBaseUrl);
+            _journalService = new JournalService(apiBaseUrl);
+        }
+
+        private async void Data_Load(object sender, RoutedEventArgs e)
+        {
+            await LoadJournals();
+        }
+
+        private async Task LoadJournals()
+        {
+            try
+            {
+                var journals = await _journalService.GetAllJournalAsync();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading journals: {ex.Message}");
+            }
+        }
+
+        private async void LoadEntriesButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var entries = await _entryService.GetAllEntryAsync();
+                var journals = await _journalService.GetAllJournalAsync();
+                EntriesListBox.ItemsSource = entries;
+                DropdownList.ItemsSource = journals;
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading entries: {ex.Message}");
+            }
+        }
+
+        private async void CreateEntry_Click(object sender, RoutedEventArgs e)
+        {
+            string title = entryName.Text;
+            string content = entryContent.Text;
+            if (string.IsNullOrWhiteSpace(title) && string.IsNullOrWhiteSpace(content))
+            {
+                MessageBox.Show("Neither Title nor Content can be empty");
+            }
+
+            if (DropdownList.SelectedValue == null)
+            {
+                MessageBox.Show("Please select a Journal");
+                return;
+            }
+
+            int journalId = (int)DropdownList.SelectedValue;
+
+            var newEntry = new CreateEntryDTO
+            {
+                JournalId = journalId,
+                Title = title,
+                Content = content,
+            };
+
+
+            try
+            {
+                var createdEntry = await _entryService.CreateEntryAsync(newEntry);
+                MessageBox.Show($"Entry created successfully: {createdEntry.Title}");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error creating Entry: {ex.Message}");
+            }
+        }
+
+        private async void UpdateEntry_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedEntry = (EntryDTO)EntriesListBox.SelectedItem;
+            if (selectedEntry == null)
+            {
+                MessageBox.Show("Please select an Entry you want to update");
+                return;
+            }
+
+            string newTitle = entryName.Text;
+            string newContent = entryContent.Text;
+
+            try
+            {
+                var updateEntryReq = new UpdateEntryReqDTO
+                {
+                    Title = newTitle,
+                    Content = newContent,
+                };
+
+                var updatedEntry = await _entryService.UpdateEntryAsync(selectedEntry.Id, updateEntryReq);
+                if (EntriesListBox.ItemsSource is ObservableCollection<EntryDTO> entries)
+                {
+                    var index = entries.IndexOf(selectedEntry);
+                    entries[index] = updatedEntry;
+                }
+
+                MessageBox.Show("Entry successfully updated");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error updating Entry: {ex.Message}");
+            }
+        }
+        private async void DeleteEntry_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedEntry = (EntryDTO)EntriesListBox.SelectedItem;
+            if (selectedEntry == null)
+            {
+                MessageBox.Show("Please select an Entry to delete");
+                return;
+            }
+
+            try
+            {
+                var result = MessageBox.Show($"Are you sure you want to delete '{selectedEntry.Title}'?", "Confirm Delete", MessageBoxButton.YesNo);
+                if (result == MessageBoxResult.Yes)
+                {
+                    await _entryService.DeleteEntryAsync(selectedEntry.Id);
+                    if (EntriesListBox.ItemsSource is ObservableCollection<EntryDTO> entries)
+                    {
+                        entries.Remove(selectedEntry);
+                    }
+
+                    MessageBox.Show("Entry Deleted Successfully");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error deleting entry: {ex.Message}");
+            }
         }
     }
 }

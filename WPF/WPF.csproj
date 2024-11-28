@@ -26,8 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Styles\" />
-    <Folder Include="PopUps\" />
+    <Folder Include="Images\" />
   </ItemGroup>
 
 </Project>

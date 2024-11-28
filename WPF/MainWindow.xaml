@@ -2,90 +2,16 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="MainWindow" 
-        Height="650" 
-        Width="1000"
-        Loaded="Data_Load">
+        Height="750" 
+        Width="1000">
     
     <Grid>
-        
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="3*" />
-            <ColumnDefinition Width="4*" />
-            <ColumnDefinition Width="3*" />
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="4*" />
-            <RowDefinition Height="1*" />
-        </Grid.RowDefinitions>
-
-        <GroupBox Header="Journals" Grid.Row="0" Grid.Column="0" Margin="10">
-            <StackPanel>
-                <ListBox x:Name="JournalsListBox" Height="200">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Vertical">
-                                <TextBlock Text="{Binding Id, StringFormat=Journal ID: {0}}"/>
-                                <TextBlock Text="{Binding Name}" FontWeight="Bold"/>
-                                <TextBlock Text="{Binding Entries.Count, StringFormat=Entries: {0}}"/>
-                            </StackPanel>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-
-                <TextBlock Margin="5,5,5,5" Text="Journal Name"/>
-                <TextBox Margin="5,5,5,5" Name="journalName"/>
-                
-                <Button Content="Create Journal" Margin="5,5,5,5" Click="CreateJournal_Click"/>
-                <Button Content="Delete Journal" Margin="5,5,5,5" Click="DeleteJournal_Click"/>
-                <Button Content="Update Journal" Margin="5,5,5,5" Click="UpdateJournal_Click"/>
-            </StackPanel>
-        </GroupBox>
-
-        <GroupBox Header="Entries" Grid.Row="0" Grid.Column="1" Margin="10">
-            <StackPanel>
-                <ListBox x:Name="EntriesListBox" Height="200">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Vertical">
-                                <TextBlock Text="{Binding JournalId, StringFormat=Journal ID: {0}}"/>
-                                <TextBlock Text="{Binding Title}" FontWeight="Bold" />
-                                <TextBlock Text="{Binding Date}" />
-                                <TextBlock Text="{Binding Content}" TextWrapping="Wrap" MaxHeight="40" />
-                            </StackPanel>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-
-                <TextBlock Margin="5,5,5,5" Text="Choose Journal"/>
-                <ComboBox Width="200" Height="30" Margin="10" 
-                          x:Name="DropdownList"
-                          ItemsSource="{Binding Journals}" 
-                          DisplayMemberPath="Name" 
-                          SelectedValuePath="Id"
-                          SelectedValue="{Binding JournalId}"
-                          Loaded="Data_Load"/>
-
-                <TextBlock Margin="5,5,5,5" Text="Entry Title"/>
-                <TextBox Margin="5,5,5,5" Name="entryName"/>
-                
-                <TextBlock Margin="5,5,5,5" Text="Entry Content"/>
-                <TextBox Margin="5,5,5,5" Height="75" Name="entryContent"/>
-                
-                
-            </StackPanel>
-        </GroupBox>
-
-        <GroupBox Grid.Row="0" Grid.Column="2">
-            <StackPanel VerticalAlignment="Center">
-                <Button Content="Create Entry" Margin="5,5,5,5" Click="CreateEntry_Click"/>
-                <Button Content="Delete Entry" Margin="5,5,5,5" Click="DeleteEntry_Click"/>
-                <Button Content="Update Entry" Margin="5,5,5,5" Click="UpdateEntry_Click"/>
-            </StackPanel>
-        </GroupBox>
-
-        <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.ColumnSpan="2" HorizontalAlignment="Center" Margin="10">
-            <Button Content="Load Journals" Width="150" Click="LoadJournalsButton_Click" />
-            <Button Content="Load Entries" Width="150" Click="LoadEntriesButton_Click" Margin="10,0,0,0" />
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Background="LightGray" Height="50">
+            <Button Content="Home" Width="100" Margin="5" Click="ToHome"/>
+            <Button Content="Journals" Width="100" Margin="5" Click="ToJournals"/>
+            <Button Content="Entries" Width="100" Margin="5" Click="ToEntries"/>
         </StackPanel>
+
+        <Frame x:Name="MainFrame" Margin="0,50,0,0" NavigationUIVisibility="Hidden" BorderBrush="Gray" BorderThickness="1"/>
     </Grid>
 </Window>
