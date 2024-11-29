@@ -16,13 +16,28 @@ using System.Windows.Shapes;
 namespace WPF.PopUps
 {
     /// <summary>
-    /// Interaction logic for UpdateJournalPopup.xaml
+    /// Interaction logic for InfoPopup.xaml
     /// </summary>
-    public partial class UpdateJournalPopup : UserControl
+    public partial class InfoPopup : UserControl
     {
-        public UpdateJournalPopup()
+        public InfoPopup(string message)
         {
             InitializeComponent();
+            MessageText.Text = message;
+        }
+
+        private void Ok_Click(object sender, RoutedEventArgs e)
+        {
+            ClosePopup();
+        }
+
+        private void ClosePopup()
+        {
+            if (this.Parent is Panel parentPanel)
+            {
+                parentPanel.Children.Remove(this);
+            }
         }
     }
+
 }
