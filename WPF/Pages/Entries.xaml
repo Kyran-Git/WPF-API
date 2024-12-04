@@ -67,7 +67,7 @@
                     <Button Content="Update Entry" Margin="5,5,5,5" Height="40" Width="100" Click="UpdateEntry_Click" Style="{StaticResource Btn_Style}"/>
                 </StackPanel>
             </GroupBox>
-            <Button Content="Load Entries" Width="150" Click="LoadEntriesButton_Click" Margin="10,0,0,0" Style="{StaticResource Btn_Style}" Height="350"/>
+            <Button Content="Load Entries" Width="150" Click="LoadEntriesButton_Click" Margin="30,0,0,0" Style="{StaticResource Btn_Style}" Height="350"/>
         </StackPanel>
     </Grid>
 </Page>

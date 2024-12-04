@@ -16,15 +16,39 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
-    
+
     <Grid>
+
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
         
-        <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Background="LightGray" Height="60">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Orientation="Horizontal" 
+                    VerticalAlignment="Top" 
+                    Background="LightGray" 
+                    Height="60"
+                    Grid.Column="0">
+            
+            
             <Button Content="Home" Width="100" Height="50" Margin="5" Click="ToHome" Style="{StaticResource Btn_Style}"/>
             <Button Content="Journals" Width="100" Height="50" Margin="5" Click="ToJournals" Style="{StaticResource Btn_Style}"/>
             <Button Content="Entries" Width="100" Height="50" Margin="5" Click="ToEntries" Style="{StaticResource Btn_Style}"/>
         </StackPanel>
 
-        <Frame x:Name="MainFrame" Margin="0,60,0,0" NavigationUIVisibility="Hidden" BorderBrush="Gray" BorderThickness="10"/>
+        <Frame x:Name="MainFrame" 
+               Margin="0,60,0,0" 
+               NavigationUIVisibility="Hidden" 
+               BorderBrush="Gray" 
+               BorderThickness="10"
+               Grid.ColumnSpan="3"
+               Grid.RowSpan="3"/>
     </Grid>
 </Window>

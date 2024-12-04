@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using WPF.DTO.Entry;
+using WPF.DTO.Journal;
 using WPF.Utilities;
 
 namespace WPF.Pages
@@ -25,6 +26,10 @@ namespace WPF.Pages
     {
         private readonly EntryService _entryService;
         private readonly JournalService _journalService;
+
+        private ObservableCollection<EntryDTO> _entries;
+        private ObservableCollection<JournalDTO> _journals;
+
         public Entries()
         {
             InitializeComponent();
@@ -50,14 +55,24 @@ namespace WPF.Pages
             }
         }
 
+        private async Task LoadEntries()
+        {
+            var entries = await _entryService.GetAllEntryAsync();
+            EntriesListBox.ItemsSource = entries;
+        }
+
         private async void LoadEntriesButton_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                var entries = await _entryService.GetAllEntryAsync();
-                var journals = await _journalService.GetAllJournalAsync();
-                EntriesListBox.ItemsSource = entries;
-                DropdownList.ItemsSource = journals;
+                var entryList = await _entryService.GetAllEntryAsync();
+                var journalList = await _journalService.GetAllJournalAsync();
+
+                _entries = new ObservableCollection<EntryDTO>(entryList);
+                _journals = new ObservableCollection<JournalDTO>(journalList);
+
+                EntriesListBox.ItemsSource = _entries;
+                DropdownList.ItemsSource = _journals;
 
             }
             catch (Exception ex)
@@ -95,6 +110,7 @@ namespace WPF.Pages
             {
                 var createdEntry = await _entryService.CreateEntryAsync(newEntry);
                 MessageBox.Show($"Entry created successfully: {createdEntry.Title}");
+                await LoadEntries();
             }
             catch (Exception ex)
             {
@@ -130,6 +146,7 @@ namespace WPF.Pages
                 }
 
                 MessageBox.Show("Entry successfully updated");
+                await LoadEntries();
             }
             catch (Exception ex)
             {
@@ -157,6 +174,7 @@ namespace WPF.Pages
                     }
 
                     MessageBox.Show("Entry Deleted Successfully");
+                    await LoadEntries();
                 }
 
             }

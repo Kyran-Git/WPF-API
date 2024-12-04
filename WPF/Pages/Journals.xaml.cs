@@ -37,6 +37,7 @@ namespace WPF.Pages
             try
             {
                 var journals = await _journalService.GetAllJournalAsync();
+                JournalsListBox.ItemsSource = journals;
             }
             catch (Exception ex)
             {
@@ -75,6 +76,7 @@ namespace WPF.Pages
                 }
 
                 MessageBox.Show("Journal successfully created");
+                await LoadJournals();
 
             }
             catch (Exception ex)
@@ -105,6 +107,7 @@ namespace WPF.Pages
                     }
 
                     MessageBox.Show("Journal deleted successfully.");
+                    await LoadJournals();
                 }
             }
             catch (Exception ex)
@@ -146,6 +149,7 @@ namespace WPF.Pages
                 }
 
                 MessageBox.Show("Journal updated successfully.");
+                await LoadJournals();
             }
             catch (Exception ex)
             {
