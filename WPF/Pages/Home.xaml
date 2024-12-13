@@ -4,26 +4,48 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:WPF.Pages"
-      mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
+      mc:Ignorable="d"
       Title="Home">
 
-    <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
+    <Grid VerticalAlignment="Center" HorizontalAlignment="Center" Height="430" Width="780">
 
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="auto"/>
-            <ColumnDefinition Width="auto"/>
-            <ColumnDefinition Width="auto"/>
-            <ColumnDefinition Width="auto"/>
-        </Grid.ColumnDefinitions>
+        <Grid Margin="50">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
 
-        <Grid.RowDefinitions>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
+            <!-- Top Left Logo -->
+            <TextBlock Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Top"
+                       FontSize="18" FontWeight="Bold" Foreground="White">
+                <Run Text="✦ journey"/>
+            </TextBlock>
 
-        <TextBlock Text="[Welcome to The Journaling App]" Grid.Row="1" FontSize="25" Grid.ColumnSpan="4" Grid.RowSpan="2"/>
+            <!-- Main Title -->
+            <TextBlock Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" TextAlignment="Center"
+                       FontSize="80" FontWeight="Bold" Foreground="White" LineStackingStrategy="BlockLineHeight" Margin="37,13,0,0">
+                <Run Text="FIND"/>
+            </TextBlock>
 
+            <TextBlock  Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center"
+                        FontSize="80" FontWeight="Bold" Foreground="White" LineStackingStrategy="BlockLineHeight">
+                <Run Text="YOUR"/>
+            </TextBlock>
+
+
+            <TextBlock  Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" TextAlignment="Center"
+                        FontSize="80" FontWeight="Bold" Foreground="White" LineStackingStrategy="BlockLineHeight" Margin="472,180,0,0">
+                <Run Text="VIBE"/>
+            </TextBlock>
+
+            <!-- Bottom Left Subtitle -->
+            <TextBlock Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Bottom"
+                       Margin="0,0,0,20" FontSize="16" Foreground="White">
+                Writing down your thoughts has never been easier.
+            </TextBlock>
+        </Grid>
     </Grid>
 </Page>

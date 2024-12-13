@@ -46,6 +46,10 @@ namespace WPF.PopUps
             if (this.Parent is Panel parentPanel)
             {
                 parentPanel.Children.Remove(this);
+                if (parentPanel is FrameworkElement PopupContainer)
+                {
+                    PopupContainer.Visibility = Visibility.Collapsed;
+                }
             }
         }
     }

@@ -32,4 +32,9 @@ public partial class MainWindow : Window
         MainFrame.Navigate(new Pages.Entries());
     }
 
+    private void CloseApp_Click(object sender, RoutedEventArgs e)
+    {
+        Close();
+    }
+
 }

@@ -6,7 +6,9 @@
         Width="1000"
         WindowStartupLocation="CenterScreen"
         ResizeMode="CanResizeWithGrip"
-        Background="LightGray">
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Gray">
 
     <Window.Resources>
         <ResourceDictionary>
@@ -19,36 +21,59 @@
 
     <Grid>
 
+        <Grid.Background>
+            <LinearGradientBrush StartPoint="1,0" EndPoint="0,0">
+                <GradientStop Color="#000000" Offset="0" />
+                <GradientStop Color="#454545" Offset="0.2" />
+                <GradientStop Color="#707070" Offset="0.4" />
+                <GradientStop Color="#d4d4d4" Offset="0.6" />
+                <GradientStop Color="#e9e9e9" Offset="0.8" />
+                <GradientStop Color="#FFFFFF" Offset="1" />
+            </LinearGradientBrush>
+        </Grid.Background>
+
         <Grid.RowDefinitions>
             <RowDefinition/>
             <RowDefinition/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        
+
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="130*" />
             <ColumnDefinition />
-            <ColumnDefinition />
-            <ColumnDefinition />
+            <ColumnDefinition Width="869*" />
         </Grid.ColumnDefinitions>
 
-        <StackPanel Orientation="Horizontal" 
+        <StackPanel Orientation="Vertical" 
                     VerticalAlignment="Top" 
-                    Background="LightGray" 
-                    Height="60"
-                    Grid.Column="0">
-            
-            
+                    Background="Transparent" 
+                    Height="680"
+                    Grid.Column="0"
+                    Grid.RowSpan="3" Margin="10,0,5,0">
+
             <Button Content="Home" Width="100" Height="50" Margin="5" Click="ToHome" Style="{StaticResource Btn_Style}"/>
             <Button Content="Journals" Width="100" Height="50" Margin="5" Click="ToJournals" Style="{StaticResource Btn_Style}"/>
             <Button Content="Entries" Width="100" Height="50" Margin="5" Click="ToEntries" Style="{StaticResource Btn_Style}"/>
         </StackPanel>
 
+        <StackPanel Orientation="Horizontal"
+                    VerticalAlignment="Top"
+                    Height="60"
+                    HorizontalAlignment="Right"
+                    Grid.Column="2" Width="60">
+            <Button x:Name="CloseApp" Style="{StaticResource ExitApp}" Click="CloseApp_Click" Margin="0" Height="60" Width="60"/>
+
+        </StackPanel>
+
+
+
         <Frame x:Name="MainFrame" 
                Margin="0,60,0,0" 
-               NavigationUIVisibility="Hidden" 
-               BorderBrush="Gray" 
-               BorderThickness="10"
-               Grid.ColumnSpan="3"
-               Grid.RowSpan="3"/>
+               NavigationUIVisibility="Hidden"
+               Grid.Column="1"
+               Grid.ColumnSpan="2"
+               Grid.RowSpan="3">
+        </Frame>
+
     </Grid>
 </Window>

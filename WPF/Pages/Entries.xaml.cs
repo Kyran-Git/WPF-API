@@ -1,20 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using WPF.DTO.Entry;
 using WPF.DTO.Journal;
+using WPF.PopUps;
 using WPF.Utilities;
 
 namespace WPF.Pages
@@ -38,9 +27,36 @@ namespace WPF.Pages
             _journalService = new JournalService(apiBaseUrl);
         }
 
+        private void ShowPopup(UserControl popup)
+        {
+            popup.HorizontalAlignment = HorizontalAlignment.Center;
+            popup.VerticalAlignment = VerticalAlignment.Center;
+            PopupContainer.Children.Clear();
+            PopupContainer.Children.Add(popup);
+            PopupContainer.Visibility = Visibility.Visible;
+
+            if (PopupContainer != null)
+            {
+                PopupContainer.Children.Clear();
+                PopupContainer.Children.Add(popup);
+                PopupContainer.Visibility = Visibility.Visible;
+                Console.WriteLine("Popup shown successfully.");  // Add this for debugging
+            }
+        }
+
+        private void ClosePopup()
+        {
+            PopupContainer.Children.Clear();
+            PopupContainer.Visibility = Visibility.Collapsed;
+        }
+
+
         private async void Data_Load(object sender, RoutedEventArgs e)
         {
+            ShowLoadingOverlay();
             await LoadJournals();
+            await LoadEntries();
+            HideLoadingOverlay();
         }
 
         private async Task LoadJournals()
@@ -48,11 +64,21 @@ namespace WPF.Pages
             try
             {
                 var journals = await _journalService.GetAllJournalAsync();
+                DropdownList.ItemsSource = journals;
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error loading journals: {ex.Message}");
             }
+        }
+        private void ShowLoadingOverlay()
+        {
+            LoadingOverlay.Visibility = Visibility.Visible;
+        }
+
+        private void HideLoadingOverlay()
+        {
+            LoadingOverlay.Visibility = Visibility.Collapsed;
         }
 
         private async Task LoadEntries()
@@ -81,18 +107,21 @@ namespace WPF.Pages
             }
         }
 
-        private async void CreateEntry_Click(object sender, RoutedEventArgs e)
+        private void CreateEntry_Click(object sender, RoutedEventArgs e)
         {
             string title = entryName.Text;
             string content = entryContent.Text;
             if (string.IsNullOrWhiteSpace(title) && string.IsNullOrWhiteSpace(content))
             {
-                MessageBox.Show("Neither Title nor Content can be empty");
+                var infoPopup = new InfoPopup("Neither Title nor Content can be empty");
+                ShowPopup(infoPopup);
+                return;
             }
 
             if (DropdownList.SelectedValue == null)
             {
-                MessageBox.Show("Please select a Journal");
+                var infoPopup = new InfoPopup("Please select a Journal");
+                ShowPopup(infoPopup);
                 return;
             }
 
@@ -106,82 +135,141 @@ namespace WPF.Pages
             };
 
 
-            try
+            var confirmationPopup = new ConfirmationPopup("Are you sure you want to create this entry?");
+            confirmationPopup.OnConfirmed += async () =>
             {
-                var createdEntry = await _entryService.CreateEntryAsync(newEntry);
-                MessageBox.Show($"Entry created successfully: {createdEntry.Title}");
-                await LoadEntries();
-            }
-            catch (Exception ex)
+                try
+                {
+                    var createdEntry = await _entryService.CreateEntryAsync(newEntry);
+                    var successPopup = new InfoPopup($"Entry created successfully: {createdEntry.Title}");
+                    ShowPopup(successPopup);
+                    await LoadEntries();
+                }
+                catch (Exception ex)
+                {
+                    var errorPopup = new InfoPopup($"Error creating Entry: {ex.Message}");
+                    ShowPopup(errorPopup);
+                }
+                finally
+                {
+                    ClosePopup();
+                }
+            };
+
+            confirmationPopup.OnCancelled += () =>
             {
-                MessageBox.Show($"Error creating Entry: {ex.Message}");
-            }
+                ClosePopup();
+            };
+
+            ShowPopup(confirmationPopup);
         }
 
-        private async void UpdateEntry_Click(object sender, RoutedEventArgs e)
+        private void UpdateEntry_Click(object sender, RoutedEventArgs e)
         {
             var selectedEntry = (EntryDTO)EntriesListBox.SelectedItem;
             if (selectedEntry == null)
             {
-                MessageBox.Show("Please select an Entry you want to update");
+                var infoPopup = new InfoPopup("Please select an Entry you want to update");
+                ShowPopup(infoPopup);
                 return;
             }
 
             string newTitle = entryName.Text;
             string newContent = entryContent.Text;
 
-            try
+            var confirmPopup = new ConfirmationPopup($"Are you sure you want to replace the Title with \"{newTitle}\" and Content with \"{newContent}\"?");
+            confirmPopup.OnConfirmed += async () =>
             {
-                var updateEntryReq = new UpdateEntryReqDTO
+                try
                 {
-                    Title = newTitle,
-                    Content = newContent,
-                };
+                    var updateEntryReq = new UpdateEntryReqDTO
+                    {
+                        Title = newTitle,
+                        Content = newContent,
+                    };
 
-                var updatedEntry = await _entryService.UpdateEntryAsync(selectedEntry.Id, updateEntryReq);
-                if (EntriesListBox.ItemsSource is ObservableCollection<EntryDTO> entries)
-                {
-                    var index = entries.IndexOf(selectedEntry);
-                    entries[index] = updatedEntry;
+                    var updatedEntry = await _entryService.UpdateEntryAsync(selectedEntry.Id, updateEntryReq);
+                    if (EntriesListBox.ItemsSource is ObservableCollection<EntryDTO> entries)
+                    {
+                        var index = entries.IndexOf(selectedEntry);
+                        entries[index] = updatedEntry;
+                    }
+
+                    var infoPopup = new InfoPopup("Entry Updated");
+                    ShowPopup(infoPopup);
+                    await LoadEntries();
                 }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error updating Entry: {ex.Message}");
+                }
+                finally
+                {
+                    ClosePopup();
+                }
+            };
 
-                MessageBox.Show("Entry successfully updated");
-                await LoadEntries();
-            }
-            catch (Exception ex)
+            confirmPopup.OnCancelled += () =>
             {
-                MessageBox.Show($"Error updating Entry: {ex.Message}");
-            }
+                ClosePopup();
+            };
+
+            ShowPopup(confirmPopup);
+
         }
-        private async void DeleteEntry_Click(object sender, RoutedEventArgs e)
+        private void DeleteEntry_Click(object sender, RoutedEventArgs e)
         {
             var selectedEntry = (EntryDTO)EntriesListBox.SelectedItem;
             if (selectedEntry == null)
             {
-                MessageBox.Show("Please select an Entry to delete");
+                var infoPopup = new InfoPopup("Please select an Entry you want to Delete");
+                ShowPopup(infoPopup);
                 return;
             }
 
             try
             {
-                var result = MessageBox.Show($"Are you sure you want to delete '{selectedEntry.Title}'?", "Confirm Delete", MessageBoxButton.YesNo);
-                if (result == MessageBoxResult.Yes)
+                var confirmPopup = new ConfirmationPopup($"Are you sure you want to delete the entry: \"{selectedEntry.Title}\"?");
+
+                confirmPopup.OnConfirmed += async () =>
                 {
-                    await _entryService.DeleteEntryAsync(selectedEntry.Id);
-                    if (EntriesListBox.ItemsSource is ObservableCollection<EntryDTO> entries)
+                    try
                     {
-                        entries.Remove(selectedEntry);
+                        await _entryService.DeleteEntryAsync(selectedEntry.Id);
+                        if (EntriesListBox.ItemsSource is ObservableCollection<EntryDTO> entries)
+                        {
+                            entries.Remove(selectedEntry);
+                        }
+
+                        var successPopup = new InfoPopup("Entry deleted successfully.");
+                        ShowPopup(successPopup);
+                        await LoadEntries();
                     }
+                    catch (Exception ex)
+                    {
+                        var errorPopup = new InfoPopup($"Error deleting entry: {ex.Message}");
+                        ShowPopup(errorPopup);
+                    }
+                    finally
+                    {
+                        ClosePopup();
+                    }
+                };
 
-                    MessageBox.Show("Entry Deleted Successfully");
-                    await LoadEntries();
-                }
+                confirmPopup.OnCancelled += () =>
+                {
+                    ClosePopup();
+                };
 
+                // Show the confirmation popup
+                ShowPopup(confirmPopup);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error deleting entry: {ex.Message}");
+                var errorPopup = new InfoPopup($"Unexpected error: {ex.Message}");
+                ShowPopup(errorPopup);
             }
         }
+
     }
 }

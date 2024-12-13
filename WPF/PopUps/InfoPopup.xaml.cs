@@ -33,9 +33,14 @@ namespace WPF.PopUps
 
         private void ClosePopup()
         {
+            // Notify the parent (PopupContainer) to close
             if (this.Parent is Panel parentPanel)
             {
                 parentPanel.Children.Remove(this);
+                if (parentPanel is FrameworkElement PopupContainer)
+                {
+                    PopupContainer.Visibility = Visibility.Collapsed;
+                }
             }
         }
     }

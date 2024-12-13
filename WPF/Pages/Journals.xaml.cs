@@ -1,19 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using WPF.DTO.Entry;
 using WPF.DTO.Journal;
+using WPF.PopUps;
 using WPF.Utilities;
 
 namespace WPF.Pages
@@ -32,6 +22,36 @@ namespace WPF.Pages
             _journalService = new JournalService(apiBaseUrl);
         }
 
+        private void ShowPopup(UserControl popup)
+        {
+            popup.HorizontalAlignment = HorizontalAlignment.Center;
+            popup.VerticalAlignment = VerticalAlignment.Center;
+            PopupContainer.Children.Clear();
+            PopupContainer.Children.Add(popup);
+            PopupContainer.Visibility = Visibility.Visible;
+
+            if (PopupContainer != null)
+            {
+                PopupContainer.Children.Clear();
+                PopupContainer.Children.Add(popup);
+                PopupContainer.Visibility = Visibility.Visible;
+                Console.WriteLine("Popup shown successfully.");  // Add this for debugging
+            }
+        }
+
+        private void ClosePopup()
+        {
+            PopupContainer.Children.Clear();
+            PopupContainer.Visibility = Visibility.Collapsed;
+        }
+
+        private async void Data_Load(object sender, RoutedEventArgs e)
+        {
+            ShowLoadingOverlay();
+            await LoadJournals();
+            HideLoadingOverlay();
+        }
+
         private async Task LoadJournals()
         {
             try
@@ -44,117 +64,197 @@ namespace WPF.Pages
                 MessageBox.Show($"Error loading journals: {ex.Message}");
             }
         }
-
-        private async void LoadJournalsButton_Click(object sender, RoutedEventArgs e)
+        private void ShowLoadingOverlay()
         {
-            try
-            {
-                var journals = await _journalService.GetAllJournalAsync();
-                JournalsListBox.ItemsSource = journals;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error loading journals: {ex.Message}");
-            }
+            LoadingOverlay.Visibility = Visibility.Visible;
         }
 
-        private async void CreateJournal_Click(object sender, RoutedEventArgs e)
+        private void HideLoadingOverlay()
+        {
+            LoadingOverlay.Visibility = Visibility.Collapsed;
+        }
+
+        private void CreateJournal_Click(object sender, RoutedEventArgs e)
         {
             string name = journalName.Text;
             if (string.IsNullOrWhiteSpace(name))
             {
-                MessageBox.Show("Journal name cannot be empty");
+                var infoPopup = new InfoPopup("Journal name cannot be empty");
+                ShowPopup(infoPopup);
+                return;
             }
-
-            try
+            var confirmPopup = new ConfirmationPopup($"Are you sure you want to name this new Journal \"{name}\"" );
+            confirmPopup.OnConfirmed += async () =>
             {
-                var journalModel = new CreateJournalReqDTO { Name = name };
-                var createdJournal = await _journalService.CreateJournalAsync(journalModel);
-                if (JournalsListBox.ItemsSource is ObservableCollection<JournalDTO> journals)
+                try
                 {
-                    journals.Add(createdJournal);
+                    var journalModel = new CreateJournalReqDTO { Name = name };
+                    var createdJournal = await _journalService.CreateJournalAsync(journalModel);
+                    if (JournalsListBox.ItemsSource is ObservableCollection<JournalDTO> journals)
+                    {
+                        journals.Add(createdJournal);
+                    }
+
+                    MessageBox.Show("Journal successfully created");
+                    await LoadJournals();
+
                 }
-
-                MessageBox.Show("Journal successfully created");
-                await LoadJournals();
-
-            }
-            catch (Exception ex)
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error creating journal: {ex.Message}");
+                }
+                finally
+                {
+                    ClosePopup();
+                }
+            };
+            confirmPopup.OnCancelled += () =>
             {
-                MessageBox.Show($"Error creating journal: {ex.Message}");
-            }
+                ClosePopup();
+            };
+
+            ShowPopup(confirmPopup);
         }
 
-        private async void DeleteJournal_Click(object sender, RoutedEventArgs e)
+        private void DeleteJournal_Click(object sender, RoutedEventArgs e)
         {
             var selectedJournal = (JournalDTO)JournalsListBox.SelectedItem;
             if (selectedJournal == null)
             {
-                MessageBox.Show("Please select a journal to delete.");
+                var infoPopup = new InfoPopup("Please select a Journal to Delete.");
+                ShowPopup(infoPopup);
                 return;
             }
 
             try
             {
-                var result = MessageBox.Show($"Are you sure you want to delete '{selectedJournal.Name}'?", "Confirm Delete", MessageBoxButton.YesNo);
-                if (result == MessageBoxResult.Yes)
+                var confirmPopup = new ConfirmationPopup($"Are you sure you want to delete : \"{selectedJournal.Name}\"?");
+                confirmPopup.OnConfirmed += async () =>
                 {
-                    await _journalService.DeleteJournalAsync(selectedJournal.Id);
-
-                    if (JournalsListBox.ItemsSource is ObservableCollection<JournalDTO> journals)
+                    try
                     {
-                        journals.Remove(selectedJournal);
-                    }
+                        await _journalService.DeleteJournalAsync(selectedJournal.Id);
+                        if (JournalsListBox.ItemsSource is ObservableCollection<JournalDTO> journals)
+                        {
+                            journals.Remove(selectedJournal);
+                        }
 
-                    MessageBox.Show("Journal deleted successfully.");
-                    await LoadJournals();
-                }
+                        var successPopup = new InfoPopup("Journal deleted Successfully");
+                        ShowPopup(successPopup);
+                        await LoadJournals();
+                    }
+                    catch (Exception ex)
+                    {
+                        var errorPopup = new InfoPopup($"Error delete journal : {ex.Message}");
+                        ShowPopup(errorPopup);
+                    }
+                    finally
+                    {
+                        ClosePopup();
+                    }
+                };
+
+                confirmPopup.OnCancelled += () =>
+                {
+                    ClosePopup();
+                };
+
+                ShowPopup(confirmPopup);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error deleting journal: {ex.Message}");
+                var errorPopup = new InfoPopup($"Unenpected Error : {ex.Message}");
+                ShowPopup(errorPopup);
             }
         }
 
 
-        private async void UpdateJournal_Click(object sender, RoutedEventArgs e)
+        private void UpdateJournal_Click(object sender, RoutedEventArgs e)
         {
             var selectedJournal = (JournalDTO)JournalsListBox.SelectedItem;
             if (selectedJournal == null)
             {
-                MessageBox.Show("Please select a journal to update.");
+                var infoPopup = new InfoPopup("Please select a Journal");
+                ShowPopup(infoPopup);
                 return;
             }
 
             string newName = journalName.Text;
             if (string.IsNullOrWhiteSpace(newName))
             {
-                MessageBox.Show("Journal name cannot be empty.");
+                var infoPopup = new InfoPopup("Journal name cannot be empty");
+                ShowPopup(infoPopup);
+                return;
+            }
+
+            var confirmPopup = new ConfirmationPopup($"Are you sure you want to change the Name to \"{newName}\"");
+            confirmPopup.OnConfirmed += async () =>
+            {
+                try
+                {
+                    var updateRequest = new UpdateJournalReqDTO
+                    {
+                        Name = newName
+                    };
+
+                    var updatedJournal = await _journalService.UpdateJournalAsync(selectedJournal.Id, updateRequest);
+
+                    if (JournalsListBox.ItemsSource is ObservableCollection<JournalDTO> journals)
+                    {
+                        var index = journals.IndexOf(selectedJournal);
+                        journals[index] = updatedJournal;
+                    }
+
+                    var infoPopup = new InfoPopup("Journal Updated");
+                    ShowPopup(infoPopup);
+                    await LoadJournals();
+                }
+                catch (Exception ex)
+                {
+                    var infoPopup = new InfoPopup($"Error updating journal : {ex.Message}");
+                    ShowPopup(infoPopup);
+                }
+                finally
+                {
+                    ClosePopup();
+                }
+            };
+
+            confirmPopup.OnCancelled += () =>
+            {
+                ClosePopup();
+            };
+
+            ShowPopup( confirmPopup );
+        }
+
+        private void JournalsListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (JournalsListBox.SelectedItem is not JournalDTO selectedJournal)
+            {
+                ShowPopup(new InfoPopup("No journal selected."));
+                return;
+            }
+
+            // Check if the journal has entries
+            var entries = selectedJournal.Entries;
+            if (entries == null || entries.Count == 0)
+            {
+                ShowPopup(new InfoPopup("This journal has no entries."));
                 return;
             }
 
             try
             {
-                var updateRequest = new UpdateJournalReqDTO
-                {
-                    Name = newName
-                };
-
-                var updatedJournal = await _journalService.UpdateJournalAsync(selectedJournal.Id, updateRequest);
-
-                if (JournalsListBox.ItemsSource is ObservableCollection<JournalDTO> journals)
-                {
-                    var index = journals.IndexOf(selectedJournal);
-                    journals[index] = updatedJournal;
-                }
-
-                MessageBox.Show("Journal updated successfully.");
-                await LoadJournals();
+                // Create the popup with the journal entries
+                var entriesPopup = new DetailsPopup(new ObservableCollection<EntryDTO>(entries));
+                ShowPopup(entriesPopup);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error updating journal: {ex.Message}");
+                ShowPopup(new InfoPopup($"Error retrieving entries: {ex.Message}"));
             }
         }
+
     }
 }
