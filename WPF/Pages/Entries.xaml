@@ -28,7 +28,7 @@
 
         <GroupBox Header="Entries" Grid.Row="0" Grid.Column="0" Margin="10,10,10,10">
             <StackPanel>
-                <ListBox x:Name="EntriesListBox" Height="300" Style="{StaticResource ListBox_Style}">
+                <ListBox x:Name="EntriesListBox" Height="300" Style="{StaticResource ListBox_Style}" SelectionChanged="EntriesListBox_SelectionChanged">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Vertical">

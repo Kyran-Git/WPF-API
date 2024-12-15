@@ -271,5 +271,26 @@ namespace WPF.Pages
             }
         }
 
+        private void EntriesListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (EntriesListBox.SelectedItem is not EntryDTO selectedEntry)
+            {
+                ShowPopup(new InfoPopup("No entry selected."));
+                return;
+            }
+
+            try
+            {
+                // Pass the selected entry to the popup
+                var entryDetailsPopup = new EntryPopup(selectedEntry);
+                ShowPopup(entryDetailsPopup);
+            }
+            catch (Exception ex)
+            {
+                ShowPopup(new InfoPopup($"Error displaying entry: {ex.Message}"));
+            }
+        }
+
+
     }
 }
