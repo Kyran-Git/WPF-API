@@ -26,24 +26,24 @@
 
             <!-- Main Title -->
             <TextBlock Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" TextAlignment="Center"
-                       FontSize="80" FontWeight="Bold" Foreground="White" LineStackingStrategy="BlockLineHeight" Margin="37,13,0,0">
+                       FontSize="80" FontWeight="ExtraBold" Foreground="White" LineStackingStrategy="BlockLineHeight" Margin="37,13,0,0">
                 <Run Text="FIND"/>
             </TextBlock>
 
             <TextBlock  Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center"
-                        FontSize="80" FontWeight="Bold" Foreground="White" LineStackingStrategy="BlockLineHeight">
+                        FontSize="80" FontWeight="ExtraBold" Foreground="White" LineStackingStrategy="BlockLineHeight">
                 <Run Text="YOUR"/>
             </TextBlock>
 
 
             <TextBlock  Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" TextAlignment="Center"
-                        FontSize="80" FontWeight="Bold" Foreground="White" LineStackingStrategy="BlockLineHeight" Margin="472,180,0,0">
+                        FontSize="80" FontWeight="ExtraBold" Foreground="White" LineStackingStrategy="BlockLineHeight" Margin="472,180,0,0">
                 <Run Text="VIBE"/>
             </TextBlock>
 
             <!-- Bottom Left Subtitle -->
             <TextBlock Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Bottom"
-                       Margin="0,0,0,20" FontSize="16" Foreground="White">
+                       Margin="0,0,0,20" FontSize="16" Foreground="Black" FontWeight="Bold">
                 Writing down your thoughts has never been easier.
             </TextBlock>
         </Grid>
