@@ -13,5 +13,6 @@ namespace API.Data
 
         public DbSet<Journal> Journals { get; set; }
         public DbSet<Entry> Entries { get; set; }
+        public DbSet<Users> Users { get; set; }
     }
 }

@@ -24,6 +24,7 @@ builder.Services.AddDbContext<ApplicationDBContext>(options => {
 
 builder.Services.AddScoped<IJournalRepo, JournalRepository>();
 builder.Services.AddScoped<IEntryRepo, EntryRepository>();
+builder.Services.AddScoped<IUserRepo, UserRepository>();
 
 var app = builder.Build();
 
