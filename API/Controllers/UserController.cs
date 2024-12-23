@@ -42,7 +42,8 @@ namespace API.Controllers
             Users user = new Users()
             {
                 UserName = userDTO.UserName,
-                Password = userDTO.Password
+                Password = userDTO.Password,
+                Role = userDTO.Role,
             };
             await _userRepo.CreateAsync(user);
             return CreatedAtAction(nameof(GetById), new { id = user.Id }, user.ToUserDTO());

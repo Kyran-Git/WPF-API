@@ -4,11 +4,82 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:WPF.Pages"
+      xmlns:viewModel="clr-namespace:WPF.Utilities" 
       mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
+      d:DesignHeight="450" d:DesignWidth="400"
       Title="Login">
 
+    <Page.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Styles/ListBox.xaml"/>
+                <ResourceDictionary Source="/Styles/Buttons.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Page.Resources>
+
     <Grid>
+
+        <Border Background="White" CornerRadius="15" Padding="20" BorderBrush="Gray" BorderThickness="1">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+
+                <Border>
+
+                    <StackPanel Width="150">
+                        <TextBlock Text="Username" 
+                                   Foreground="DarkGray" 
+                                   FontSize="12" 
+                                   FontWeight="Medium" 
+                                   FontFamily="Montserrat"
+                                   Margin="0,15,0,0"/>
+                        
+                        <TextBox x:Name="txtUser" 
+                                 Text="{Binding UserName}" 
+                                 FontSize="12" 
+                                 FontWeight="Medium" 
+                                 FontFamily="Montserrat" 
+                                 Foreground="Black" 
+                                 CaretBrush="LightGray" 
+                                 BorderBrush="DarkGray" 
+                                 BorderThickness="0,0,0,3" 
+                                 Height="20" 
+                                 VerticalAlignment="Center" 
+                                 Margin="0,5,0,0" 
+                                 Padding="20,0,0,0"/>
+
+                        <TextBlock Text="Password"
+                                   Foreground="DarkGray"
+                                   FontSize="12"
+                                   FontWeight="Medium"
+                                   FontFamily="Montserrat"
+                                   Margin="0,15,0,0"/>
+                        <TextBox x:Name="txtPassword" 
+                                 Text="{Binding Password}" 
+                                 FontSize="12" 
+                                 FontWeight="Medium" 
+                                 FontFamily="Montserrat" 
+                                 Foreground="Black" 
+                                 CaretBrush="LightGray" 
+                                 BorderBrush="DarkGray" 
+                                 BorderThickness="0,0,0,3" 
+                                 Height="20" 
+                                 VerticalAlignment="Center" 
+                                 Margin="0,5,0,0" 
+                                 Padding="20,0,0,0"/>
+
+                        <Button Style="{StaticResource Btn_Style}" 
+                                Content="LOGIN"
+                                Width="100"
+                                Height="40"
+                                Margin="0,20,0,20"
+                                Padding="20,0,0,0"
+                                Click="Login_Click"/>
+                    </StackPanel>
+                    
+                </Border>
+
+            </StackPanel>
+        </Border>
         
     </Grid>
 </Page>

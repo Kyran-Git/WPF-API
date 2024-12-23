@@ -53,6 +53,7 @@ namespace API.Repository
 
             existingUser.UserName = userModel.UserName;
             existingUser.Password = userModel.Password;
+            existingUser.Role = userModel.Role;
             await _context.SaveChangesAsync();
             return existingUser;
         }

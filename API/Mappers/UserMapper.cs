@@ -12,7 +12,8 @@ namespace API.Mappers
             {
                 Id = userModel.Id,
                 UserName = userModel.UserName,
-                Password = userModel.Password
+                Password = userModel.Password,
+                Role = userModel.Role,
             };
         }
 
@@ -22,6 +23,7 @@ namespace API.Mappers
             {
                 UserName = userDTO.UserName,
                 Password = userDTO.Password,
+                Role = userDTO.Role,
             };
         }
 
@@ -30,7 +32,8 @@ namespace API.Mappers
             return new Users
             {
                 UserName = userDTO.UserName,
-                Password = userDTO.Password
+                Password = userDTO.Password,
+                Role = userDTO.Role,
             };
         }
     }

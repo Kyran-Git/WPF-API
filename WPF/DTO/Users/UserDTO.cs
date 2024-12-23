@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WPF.Models
+namespace WPF.DTO.Users
 {
-    internal class User
+    public class UserDTO
     {
-        public int Id {  get; set; }
         public string UserName { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
     }
