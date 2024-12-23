@@ -65,7 +65,12 @@
 
         </StackPanel>
 
-
+        <Frame x:Name="LoginFrame" 
+               NavigationUIVisibility="Hidden"
+               Grid.ColumnSpan="3"
+               Grid.RowSpan="3">
+            
+        </Frame>
 
         <Frame x:Name="MainFrame" 
                Margin="0,60,0,0" 

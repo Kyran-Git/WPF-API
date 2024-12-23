@@ -14,7 +14,7 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
-        MainFrame.Navigate(new Pages.Home());
+        LoginFrame.Navigate(new Pages.Login(LoginFrame));
     }
 
     private void ToHome(object sender, RoutedEventArgs e)

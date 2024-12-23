@@ -14,7 +14,7 @@ namespace WPF.RoleLogic
 
         public static bool NormalAccess(string role)
         {
-            return role == "Admin" || role == "Normal";
+            return role == "Normal";
         }
     }
 }
