@@ -10,6 +10,6 @@ namespace WPF.RoleLogic
 {
     public static class Session
     {
-        public static User? CurrentUser { get; set; }
+        public static UserDTO? CurrentUser { get; set; }
     }
 }
