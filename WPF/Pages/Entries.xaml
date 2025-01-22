@@ -15,6 +15,8 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Styles/ListBox.xaml"/>
                 <ResourceDictionary Source="/Styles/Buttons.xaml"/>
+                <ResourceDictionary Source="/Styles/LoadingAnimation.xaml"/>
+                <ResourceDictionary Source="/Styles/BoxNText.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Page.Resources>
@@ -22,71 +24,169 @@
     <Grid>
 
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="550"/>
-            <ColumnDefinition Width="250"/>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
 
-        <GroupBox Header="Entries" Grid.Row="0" Grid.Column="0" Margin="10,10,10,10">
-            <StackPanel>
-                <ListBox x:Name="EntriesListBox" Height="300" Style="{StaticResource ListBox_Style}" SelectionChanged="EntriesListBox_SelectionChanged">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Vertical">
-                                <TextBlock Text="{Binding JournalId, StringFormat=Journal ID: {0}}" Foreground="AntiqueWhite"/>
-                                <TextBlock Text="{Binding Title}" FontWeight="Bold" Foreground="AntiqueWhite"/>
-                                <TextBlock Text="{Binding Date}" Foreground="AntiqueWhite"/>
-                                <TextBlock Text="{Binding Content}" TextWrapping="Wrap" MaxHeight="40" Foreground="AntiqueWhite"/>
-                            </StackPanel>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
+        <!-- Entries Section -->
+        <GroupBox Header="Entries" Grid.Column="0" Margin="10" Padding="10"
+          Style="{StaticResource ModernGroupBox}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
-                <TextBlock Margin="5,5,5,5" Text="Choose Journal"/>
-                <ComboBox Width="200" Height="30" Margin="10" 
-                  x:Name="DropdownList"
-                  ItemsSource="{Binding Journals}" 
-                  DisplayMemberPath="Name" 
-                  SelectedValuePath="Id"
-                  SelectedValue="{Binding JournalId}"
-                  Loaded="Data_Load"/>
+                <!-- Journal Selection -->
+                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,10">
+                    <TextBlock Text="Choose Journal:" VerticalAlignment="Center" 
+                      Margin="0,0,10,0" FontWeight="SemiBold"/>
+                    <ComboBox Width="200" Height="30"
+                        x:Name="DropdownList"
+                        ItemsSource="{Binding Journals}" 
+                        DisplayMemberPath="Name" 
+                        SelectedValuePath="Id"
+                        SelectedValue="{Binding JournalId}"/>
+                </StackPanel>
 
-                <TextBlock Margin="5,5,5,5" Text="Entry Title"/>
-                <TextBox Margin="5,5,5,5" Name="entryName"/>
+                <!-- Entries List -->
+                <Border Grid.Row="1" CornerRadius="5" Margin="0,0,0,15"
+                Background="{StaticResource ListBackground}">
+                    <ListBox x:Name="EntriesListBox" Style="{StaticResource ListBox_Style}"
+                    SelectionChanged="EntriesListBox_SelectionChanged">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Border Padding="10" Margin="2" CornerRadius="3"
+                               Background="{StaticResource ListItemBackground}">
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding Title}" 
+                                          FontWeight="Bold" 
+                                          Style="{StaticResource EntryText}"/>
+                                        <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                                            <TextBlock Text="{Binding Date}" 
+                                              Style="{StaticResource MetaText}"/>
+                                            <TextBlock Text=" • " 
+                                              Style="{StaticResource MetaText}"/>
+                                            <TextBlock Text="{Binding JournalId}" 
+                                              Style="{StaticResource MetaText}"
+                                              FontStyle="Italic"/>
+                                        </StackPanel>
+                                        <TextBlock Text="{Binding Content}" 
+                                          Margin="0,5,0,0"
+                                          Style="{StaticResource ContentText}"
+                                          TextWrapping="Wrap"
+                                          MaxHeight="40"/>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Border>
 
-                <TextBlock Margin="5,5,5,5" Text="Entry Content"/>
-                <TextBox Margin="5,5,5,5" Height="75" Name="entryContent"/>
+                <!-- Entry Form -->
+                <StackPanel Grid.Row="2" Margin="0,0,0,10">
+                    <TextBlock Text="Entry Title" Style="{StaticResource FormLabel}"/>
+                    <TextBox x:Name="entryName" Style="{StaticResource FormTextBox}"/>
+                </StackPanel>
 
-
-            </StackPanel>
+                <StackPanel Grid.Row="3" Margin="0,0,0,15">
+                    <TextBlock Text="Entry Content" Style="{StaticResource FormLabel}"/>
+                    <TextBox x:Name="entryContent" AcceptsReturn="True" 
+                    VerticalScrollBarVisibility="Auto"
+                    Style="{StaticResource FormContentBox}"/>
+                </StackPanel>
+            </Grid>
         </GroupBox>
 
-        <StackPanel Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Center" Margin="0,10,0,10" Width="122">
-            <GroupBox Grid.Row="0" Grid.Column="1">
-                <StackPanel VerticalAlignment="Center">
-                    <Button Content="Create Entry" Margin="5,5,5,5" Height="40" Width="100" Click="CreateEntry_Click" Style="{StaticResource Btn_Style}"/>
-                    <Button Content="Delete Entry" Margin="5,5,5,5" Height="40" Width="100" Click="DeleteEntry_Click" Style="{StaticResource Btn_Style}"/>
-                    <Button Content="Update Entry" Margin="5,5,5,5" Height="40" Width="100" Click="UpdateEntry_Click" Style="{StaticResource Btn_Style}"/>
-                </StackPanel>
-            </GroupBox>
-        </StackPanel>
+        <!-- Action Buttons -->
+        <GroupBox Header="Actions" Grid.Column="1" Margin="10" Padding="10"
+         Style="{StaticResource ModernGroupBox}">
+            <UniformGrid Rows="3" VerticalAlignment="Top">
+                <Button Content="Create Entry" Height="40" Margin="5" Width="90"
+                    Click="CreateEntry_Click" Style="{StaticResource Btn_Style}"/>
+                <Button Content="Update Entry" Height="40" Margin="5" Width="90"
+                    Click="UpdateEntry_Click" Style="{StaticResource Btn_Style}"/>
+                <Button Content="Delete Entry" Height="40" Margin="5" Width="90"
+                    Click="DeleteEntry_Click" Style="{StaticResource Btn_Style}"/>
+            </UniformGrid>
+        </GroupBox>
 
         <Grid x:Name="PopupContainer" Background="#80000000" Visibility="Collapsed" Panel.ZIndex="9"/>
 
 
-        <Grid x:Name="LoadingOverlay" Visibility="Collapsed" Panel.ZIndex="10" Grid.RowSpan="2" Grid.ColumnSpan="2">
+        <Grid x:Name="LoadingOverlay" 
+            Visibility="Collapsed" 
+            Panel.ZIndex="1000" 
+            Grid.RowSpan="3" 
+            Grid.ColumnSpan="3">
+
+            <!-- Semi-transparent overlay -->
             <Grid.Background>
-                <LinearGradientBrush StartPoint="1,0" EndPoint="0,0">
-                    <GradientStop Color="#151515" Offset="0" />
-                    <GradientStop Color="#454545" Offset="0.2" />
-                    <GradientStop Color="#707070" Offset="0.5" />
-                    <GradientStop Color="#d4d4d4" Offset="0.7" />
-                    <GradientStop Color="#e9e9e9" Offset="0.9" />
-                </LinearGradientBrush>
+                <SolidColorBrush Color="#801E1E1E"/>
             </Grid.Background>
-            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                <TextBlock Text="Loading..." Foreground="White" FontSize="20" Margin="0,0,0,20" />
-                <ProgressBar IsIndeterminate="True" Width="200" Height="10" />
-            </StackPanel>
+
+            <!-- Loading content container -->
+            <Border Background="#303030" 
+                CornerRadius="15"
+                Padding="30"
+                Effect="{StaticResource DropShadowEffect}">
+
+                <StackPanel HorizontalAlignment="Center" 
+                    VerticalAlignment="Center"
+                    Orientation="Vertical"
+                    TextElement.Foreground="White">
+
+                    <!-- Animated loading icon -->
+                    <Viewbox Width="60" Height="60" Margin="0,0,0,20">
+                        <Canvas Width="24" Height="24">
+                            <Ellipse Fill="#00FFD1" Width="12" Height="12">
+                                <Ellipse.RenderTransform>
+                                    <RotateTransform Angle="0" CenterX="6" CenterY="6"/>
+                                </Ellipse.RenderTransform>
+                                <Ellipse.Triggers>
+                                    <EventTrigger RoutedEvent="Loaded">
+                                        <BeginStoryboard>
+                                            <Storyboard RepeatBehavior="Forever">
+                                                <DoubleAnimation
+                                    Storyboard.TargetProperty="(Ellipse.RenderTransform).(RotateTransform.Angle)"
+                                    From="0" To="360" Duration="0:0:2"/>
+                                                <ColorAnimationUsingKeyFrames
+                                    Storyboard.TargetProperty="Fill.(SolidColorBrush.Color)">
+                                                    <DiscreteColorKeyFrame KeyTime="0:0:0" Value="#00FFD1"/>
+                                                    <DiscreteColorKeyFrame KeyTime="0:0:0.5" Value="#FF00FF"/>
+                                                    <DiscreteColorKeyFrame KeyTime="0:0:1" Value="#00B4FF"/>
+                                                </ColorAnimationUsingKeyFrames>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </EventTrigger>
+                                </Ellipse.Triggers>
+                            </Ellipse>
+                        </Canvas>
+                    </Viewbox>
+
+                    <!-- Loading text -->
+                    <TextBlock Text="Loading" 
+                        FontSize="18" 
+                        FontWeight="SemiBold"
+                        HorizontalAlignment="Center"
+                        Margin="0,0,0,10">
+                        <TextBlock.Effect>
+                            <DropShadowEffect Color="#80FFFFFF" BlurRadius="5" Opacity="0.8"/>
+                        </TextBlock.Effect>
+                    </TextBlock>
+
+                    <!-- Modern progress bar -->
+                    <ProgressBar IsIndeterminate="True" 
+                        Width="200" 
+                        Height="8"
+                        Foreground="#00FFD1"
+                        Style="{StaticResource ModernProgressBar}"/>
+                </StackPanel>
+            </Border>
         </Grid>
 
 

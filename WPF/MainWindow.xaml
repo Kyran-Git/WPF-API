@@ -8,77 +8,98 @@
         ResizeMode="CanResizeWithGrip"
         WindowStyle="None"
         AllowsTransparency="True"
-        Background="Gray">
+        Background="Transparent">
 
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Styles/ListBox.xaml"/>
                 <ResourceDictionary Source="/Styles/Buttons.xaml"/>
+                <ResourceDictionary Source="/Styles/otherButtons.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
 
-    <Grid>
+    <!-- Add window shadow -->
+    <Border Margin="5" Background="Transparent">
+        <Border.Effect>
+            <DropShadowEffect Color="Black" Opacity="0.3" BlurRadius="15"/>
+        </Border.Effect>
 
-        <Grid.Background>
-            <LinearGradientBrush StartPoint="1,0" EndPoint="0,0">
-                <GradientStop Color="#000000" Offset="0" />
-                <GradientStop Color="#454545" Offset="0.2" />
-                <GradientStop Color="#707070" Offset="0.4" />
-                <GradientStop Color="#d4d4d4" Offset="0.6" />
-                <GradientStop Color="#e9e9e9" Offset="0.8" />
-                <GradientStop Color="#FFFFFF" Offset="1" />
-            </LinearGradientBrush>
-        </Grid.Background>
+        <Grid>
+            <Grid.Background>
+                <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                    <GradientStop Color="#1E1E1E" Offset="0"/>
+                    <GradientStop Color="#3A3A3A" Offset="1"/>
+                </LinearGradientBrush>
+            </Grid.Background>
 
-        <Grid.RowDefinitions>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
 
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="130*" />
-            <ColumnDefinition />
-            <ColumnDefinition Width="869*" />
-        </Grid.ColumnDefinitions>
+            <!-- Title Bar -->
+            <Grid Grid.Row="0" Background="Transparent" MouseLeftButtonDown="DragWindow">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
 
-        <StackPanel Orientation="Vertical" 
-                    VerticalAlignment="Top" 
-                    Background="Transparent" 
-                    Height="680"
-                    Grid.Column="0"
-                    Grid.RowSpan="3" Margin="10,0,5,0">
+                <TextBlock Text="My Application" 
+                         Foreground="White"
+                         FontSize="14"
+                         VerticalAlignment="Center"
+                         Margin="20,0"/>
 
-            <Button Content="Home" Width="100" Height="50" Margin="5" Click="ToHome" Style="{StaticResource Btn_Style}"/>
-            <Button Content="Journals" Width="100" Height="50" Margin="5" Click="ToJournals" Style="{StaticResource Btn_Style}"/>
-            <Button Content="Entries" Width="100" Height="50" Margin="5" Click="ToEntries" Style="{StaticResource Btn_Style}"/>
-        </StackPanel>
+                <StackPanel Orientation="Horizontal" Grid.Column="1">
+                    <Button x:Name="MinimizeButton" Style="{StaticResource WindowButtonStyle}"
+                            Content="─" Click="Minimize_Click"/>
+                    <Button x:Name="MaximizeButton" Style="{StaticResource WindowButtonStyle}"
+                            Content="□" Click="Maximize_Click"/>
+                    <Button x:Name="CloseButton" Style="{StaticResource CloseWindowButtonStyle}"
+                            Content="✕" Click="CloseApp_Click"/>
+                </StackPanel>
+            </Grid>
 
-        <StackPanel Orientation="Horizontal"
-                    VerticalAlignment="Top"
-                    Height="60"
-                    HorizontalAlignment="Right"
-                    Grid.Column="2" Width="60">
-            <Button x:Name="CloseApp" Style="{StaticResource ExitApp}" Click="CloseApp_Click" Margin="0" Height="60" Width="60"/>
+            <!-- Main Content -->
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="200"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
 
-        </StackPanel>
+                <!-- Navigation Panel -->
+                <Border Grid.Column="0" Background="#252525" CornerRadius="0,10,0,0">
+                    <StackPanel Orientation="Vertical" Margin="10">
+                        <Button Style="{StaticResource NavButtonStyle}" Click="ToHome">
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="/Icons/home.png" Width="20" Margin="0,0,10,0"/>
+                                <TextBlock Text="Home" Foreground="White"/>
+                            </StackPanel>
+                        </Button>
+                        <Button Style="{StaticResource NavButtonStyle}" Click="ToJournals">
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="/Icons/journal.png" Width="20" Margin="0,0,10,0"/>
+                                <TextBlock Text="Journals" Foreground="White"/>
+                            </StackPanel>
+                        </Button>
+                        <Button Style="{StaticResource NavButtonStyle}" Click="ToEntries">
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="/Icons/entry.png" Width="20" Margin="0,0,10,0"/>
+                                <TextBlock Text="Entries" Foreground="White"/>
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </Border>
 
-        <Frame x:Name="LoginFrame" 
-               NavigationUIVisibility="Hidden"
-               Grid.ColumnSpan="3"
-               Grid.RowSpan="3">
-            
-        </Frame>
-
-        <Frame x:Name="MainFrame" 
-               Margin="0,60,0,0" 
-               NavigationUIVisibility="Hidden"
-               Grid.Column="1"
-               Grid.ColumnSpan="2"
-               Grid.RowSpan="3">
-        </Frame>
-
-    </Grid>
+                <!-- Content Area -->
+                <Frame x:Name="MainFrame" 
+                     Grid.Column="1"
+                     NavigationUIVisibility="Hidden"
+                     Margin="10"
+                     Background="Transparent"/>
+            </Grid>
+        </Grid>
+    </Border>
 </Window>

@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows;
+using System.Windows.Input;
 using WPF.DTO.Entry;
 using WPF.DTO.Journal;
 using WPF.Utilities;
@@ -14,7 +15,6 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
-        LoginFrame.Navigate(new Pages.Login(LoginFrame));
     }
 
     private void ToHome(object sender, RoutedEventArgs e)
@@ -35,6 +35,24 @@ public partial class MainWindow : Window
     private void CloseApp_Click(object sender, RoutedEventArgs e)
     {
         Close();
+    }
+
+    private void DragWindow(object sender, MouseButtonEventArgs e)
+    {
+        if (e.ChangedButton == MouseButton.Left)
+            DragMove();
+    }
+
+    private void Minimize_Click(object sender, RoutedEventArgs e)
+    {
+        WindowState = WindowState.Minimized;
+    }
+
+    private void Maximize_Click(object sender, RoutedEventArgs e)
+    {
+        WindowState = WindowState == WindowState.Maximized
+            ? WindowState.Normal
+            : WindowState.Maximized;
     }
 
 }

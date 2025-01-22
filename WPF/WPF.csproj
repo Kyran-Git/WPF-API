@@ -20,6 +20,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Icons\entry.png" />
+    <None Remove="Icons\home.png" />
+    <None Remove="Icons\journal.png" />
     <None Remove="Pictures\Home.png" />
     <None Remove="Pictures\shutdown_def.png" />
     <None Remove="Pictures\shutdown_mo.png" />
@@ -32,6 +35,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Icons\entry.png" />
+    <Resource Include="Icons\home.png" />
+    <Resource Include="Icons\journal.png" />
     <Resource Include="Pictures\Home.png" />
     <Resource Include="Pictures\shutdown_def.png" />
     <Resource Include="Pictures\shutdown_mo.png" />
