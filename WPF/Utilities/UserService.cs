@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using WPF.DTO.Users;
+using System.Net.Http.Json;
 
 namespace WPF.Utilities
 {
@@ -49,6 +50,26 @@ namespace WPF.Utilities
         {
             var response = await _client.DeleteAsync($"API/Users/{id}");
             return response.IsSuccessStatusCode;
+        }
+
+        public async Task<UserDTO> AuthenticateAsync(string username, string password)
+        {
+            try
+            {
+                var response = await _client.PostAsJsonAsync("api/auth/login", new
+                {
+                    Username = username,
+                    Password = password
+                });
+
+                response.EnsureSuccessStatusCode();
+
+                return await response.Content.ReadFromJsonAsync<UserDTO>();
+            }
+            catch
+            {
+                return null;
+            }
         }
     }
 }
