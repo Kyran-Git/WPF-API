@@ -1,22 +1,32 @@
-﻿using System.Windows;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
-using WPF.DTO.Users;
-using WPF.Pages;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
 using WPF.Utilities;
 
-namespace WPF.Pages
+namespace WPF.Windows
 {
-    public partial class Login : Page
+    /// <summary>
+    /// Interaction logic for LoginWindow.xaml
+    /// </summary>
+    public partial class LoginWindow : Window
     {
         private readonly UserService _userService;
-        private readonly Frame _mainFrame;
 
-        public Login(Frame mainFrame)
+        public LoginWindow()
         {
             InitializeComponent();
             string apiBaseUrl = "http://localhost:5053/";
             _userService = new UserService(apiBaseUrl);
-            _mainFrame = mainFrame;
         }
 
         private async void Login_Click(object sender, RoutedEventArgs e)
@@ -26,7 +36,6 @@ namespace WPF.Pages
                 string username = txtUser.Text.Trim();
                 string password = txtPassword.Password;
 
-                // Validate input
                 if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
                 {
                     MessageBox.Show("Please enter both username and password.",
@@ -36,16 +45,16 @@ namespace WPF.Pages
                     return;
                 }
 
-                // Authenticate via service
                 var user = await _userService.AuthenticateAsync(username, password);
 
                 if (user != null)
                 {
-                    // Store current user in application properties
+                    // Store user in application scope
                     Application.Current.Properties["CurrentUser"] = user;
 
-                    // Navigate to main content
-                    _mainFrame.Navigate(new Home());
+                    // Set dialog result and close
+                    DialogResult = true;
+                    Close();
                 }
                 else
                 {
@@ -64,6 +73,11 @@ namespace WPF.Pages
                               MessageBoxImage.Error);
             }
         }
+
+        private void DragWindow(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left)
+                DragMove();
+        }
     }
 }
-

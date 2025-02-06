@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Input;
 using WPF.DTO.Entry;
 using WPF.DTO.Journal;
+using WPF.DTO.Users;
 using WPF.Pages;
 using WPF.Utilities;
 
@@ -16,7 +17,16 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
-        MainFrame.Navigate(new Login(MainFrame));
+
+        if (Application.Current.Properties["CurrentUser"] is not UserDTO user)
+        {
+            MessageBox.Show("Authentication required!");
+            Close();
+            return;
+        }
+
+        // Initialize navigation to home page
+        MainFrame.Navigate(new Pages.Home());
     }
 
     private void ToHome(object sender, RoutedEventArgs e)
